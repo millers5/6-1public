@@ -1,0 +1,36 @@
+version: "3.8"
+services:
+
+  postgis:
+    image: "mdillon/postgis"
+    hostname: postgis
+    ports:
+      - "5432:5432"
+    volumes:
+      - /workspaces/geoserver-intro/postgres_data/data:/var/lib/postgresql/data
+      
+  geoserver:
+    image: "kartoza/geoserver"
+    ports:
+      - "8080:8080"
+    volumes:
+      - /workspaces/geoserver-intro/geoserver_data/data_dir:/opt/geoserver/data_dir
+    environment:
+      - GEOSERVER_ADMIN_USER=admin
+      - GEOSERVER_ADMIN_PASSWORD=geoserver
+      - HTTP_PROXY_NAME=${CODESPACE_NAME}-8080.preview.app.github.dev
+      - HTTP_SCHEME=https
+      - MAXIMUM_MEMORY=756M
+      - INITIAL_MEMORY=128M
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '1'
+          memory: 1G
+
+networks:
+  default:
+    name: gist604b
